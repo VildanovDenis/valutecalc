@@ -5,10 +5,13 @@
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
-    "mocha": "^6.1.4"
+    "mocha": "^6.1.4",
+    "parcel-bundler": "^1.12.3"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+      "dev": "parcel index.html",
+      "build": "parcel build  index.html"
   },
   "repository": {
     "type": "git",
