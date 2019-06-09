@@ -1,3 +1,5 @@
+const {convertValute} = require('../js/index_bundle');
+
 const input = document.querySelector('#value');
 const valuteSelect = document.querySelector('#valute');
 const output = document.querySelector('#new_value');
@@ -51,10 +53,3 @@ valuteSelect.addEventListener('change', function(e) {
     output.value = outputValue;
 })
 
-function convertValute(value, valuteNominal, valuteValue) {
-    const converted = (value * valuteNominal / valuteValue).toFixed(2);
-    if (isNaN(converted)) {
-        return 'Введите корректное значние'
-    }
-    return (value * valuteNominal / valuteValue).toFixed(2);
-}
