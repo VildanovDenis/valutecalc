@@ -3,15 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "dependencies": {},
   "devDependencies": {
     "mocha": "^6.1.4",
     "parcel-bundler": "^1.12.3"
   },
   "scripts": {
     "test": "mocha",
-      "dev": "parcel index.html",
-      "build": "parcel build  index.html"
+    "dev": "parcel index.html",
+    "build": "parcel build  index.html"
   },
   "repository": {
     "type": "git",
@@ -22,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/VildanovDenis/valutecalc/issues"
   },
-  "homepage": "https://github.com/VildanovDenis/valutecalc#readme"
+  "homepage": "https://github.com/VildanovDenis/valutecalc#readme",
+  "dependencies": {
+    "regenerator-runtime": "^0.13.2"
+  }
 }

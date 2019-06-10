@@ -1,5 +1,5 @@
 const assert = require('assert');
-const {convertValute} = require('../js/convert_value');
+const { convertValute } = require('../js/convert_value');
 
 describe('Вызов функции с нечисловыми значениями', () => {
     it('', () => {
