@@ -872,7 +872,6 @@ var _require = require('../js/convert_value'),
 var input = document.querySelector('#value');
 var valuteSelect = document.querySelector('#valute');
 var output = document.querySelector('#new_value');
-var valute = {};
 var valuteDb;
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
@@ -903,7 +902,7 @@ function _createOptions() {
   _createOptions = _asyncToGenerator(
   /*#__PURE__*/
   regeneratorRuntime.mark(function _callee() {
-    var request, key, option;
+    var valute, request, key, option;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
@@ -930,14 +929,18 @@ function _createOptions() {
               }
             };
 
+            request.onsuccess = function (e) {
+              valuteDb = e.target.result;
+            };
+
             for (key in valute) {
               option = document.createElement('option');
               option.setAttribute('title', valute[key].Name);
-              option.innerHTML = valute[key].CharCode;
+              option.innerHTML = valute[key].Name;
               valuteSelect.appendChild(option);
             }
 
-          case 7:
+          case 8:
           case "end":
             return _context.stop();
         }
@@ -952,20 +955,29 @@ createOptions();
 input.addEventListener('input', function (e) {
   var value = this.value;
   var valuteCode = valuteSelect.value;
+  var tx = valuteDb.transaction('valutes');
+  var txStore = tx.objectStore('valutes');
+  var currentValute = txStore.get(valuteCode);
 
-  var nominal = valuteDb.transaction("valutes").objectStore("valutes").get(value).onsuccess = function (e) {
-    return e.target.result;
+  currentValute.onsuccess = function (e) {
+    var valuteObj = e.target.result;
+    var outputValue = convertValute(value, valuteObj.Nominal, valuteObj.Value);
+    output.value = outputValue;
   };
-
-  var outputValue = convertValute(value, valute[valuteCode].Nominal, valute[valuteCode].Value);
-  output.value = outputValue;
 });
 valuteSelect.addEventListener('change', function (e) {
   var valuteCode = this.value;
   var value = input.value;
   if (value === '') return;
-  var outputValue = convertValute(value, valute[valuteCode].Nominal, valute[valuteCode].Value);
-  output.value = outputValue;
+  var tx = valuteDb.transaction('valutes');
+  var txStore = tx.objectStore('valutes');
+  var currentValute = txStore.get(valuteCode);
+
+  currentValute.onsuccess = function (e) {
+    var valuteObj = e.target.result;
+    var outputValue = convertValute(value, valuteObj.Nominal, valuteObj.Value);
+    output.value = outputValue;
+  };
 });
 },{"regenerator-runtime/runtime":"node_modules/regenerator-runtime/runtime.js","../js/convert_value":"js/convert_value.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -995,7 +1007,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51918" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55256" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

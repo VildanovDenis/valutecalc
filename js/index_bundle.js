@@ -4,7 +4,6 @@ const { convertValute } = require('../js/convert_value');
 const input = document.querySelector('#value');
 const valuteSelect = document.querySelector('#valute');
 const output = document.querySelector('#new_value');
-let valute = {};
 let valuteDb;
 
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
@@ -26,7 +25,7 @@ function getValuteData() {
 }
 
 async function createOptions() {
-    valute = await getValuteData();
+    const valute = await getValuteData();
 
     const request = indexedDB.open('valutes', 1);
 
@@ -44,10 +43,14 @@ async function createOptions() {
         }
     }
 
+    request.onsuccess = function(e) {
+        valuteDb = e.target.result;
+    }
+
     for (let key in valute) {
         const option = document.createElement('option');
         option.setAttribute('title', valute[key].Name);
-        option.innerHTML = valute[key].CharCode
+        option.innerHTML = valute[key].Name
 
         valuteSelect.appendChild(option);
     }
@@ -58,21 +61,33 @@ createOptions();
 input.addEventListener('input', function(e) {
     const value = this.value;
     const valuteCode = valuteSelect.value;
-
-    const nominal = valuteDb.transaction("valutes").objectStore("valutes").get(value).onsuccess = function(e) {
-        return e.target.result
-    };
-
-    const outputValue = convertValute(value, valute[valuteCode].Nominal, valute[valuteCode].Value);
     
-    output.value = outputValue;
+    const tx = valuteDb.transaction('valutes');
+    const txStore = tx.objectStore('valutes');
+    const currentValute = txStore.get(valuteCode);
+
+    currentValute.onsuccess = e => {
+        const valuteObj = e.target.result;
+        const outputValue = convertValute(value, valuteObj.Nominal, valuteObj.Value);
+    
+        output.value = outputValue
+    }
 });
 
 valuteSelect.addEventListener('change', function(e) {
     const valuteCode = this.value;
     const value = input.value;
-    if (value === '') return;
-    const outputValue = convertValute(value, valute[valuteCode].Nominal, valute[valuteCode].Value);
 
-    output.value = outputValue;
+    if (value === '') return;
+
+    const tx = valuteDb.transaction('valutes');
+    const txStore = tx.objectStore('valutes');
+    const currentValute = txStore.get(valuteCode);
+
+    currentValute.onsuccess = e => {
+        const valuteObj = e.target.result;
+        const outputValue = convertValute(value, valuteObj.Nominal, valuteObj.Value);
+    
+        output.value = outputValue
+    }
 })
